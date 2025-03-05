@@ -136,9 +136,6 @@ struct GameResultPeriodsView: View {
             HStack {
                 Spacer()
 
-                Divider()
-//                    .background(.white)
-
                 ForEach(data.periodsDescription, id: \.self) { description in
                     HStack {
                         Text(description)
@@ -151,14 +148,13 @@ struct GameResultPeriodsView: View {
             }
 
             Divider()
+                .background(.white)
+                .padding(.leading, 64)
 
             HStack {
                 LogoImageView(logo: data.awayTeam.logo)
                     .frame(width: 32)
                 Spacer()
-
-                Divider()
-//                    .background(.white)
 
                 ForEach(data.awayTeam.periodScores, id: \.self) { score in
                     HStack {
@@ -172,14 +168,13 @@ struct GameResultPeriodsView: View {
             }
 
             Divider()
+                .background(.white)
+                .padding(.leading, 64)
 
             HStack {
                 LogoImageView(logo: data.homeTeam.logo)
                     .frame(width: 32)
                 Spacer()
-
-                Divider()
-//                    .background(.white)
 
                 ForEach(data.homeTeam.periodScores, id: \.self) { score in
                     HStack {
