@@ -8,8 +8,8 @@
 
 import Foundation
 
-private let baseURL = "https://hoops-api-e2c6d4f492c7.herokuapp.com"
-// private let baseURL = "http://127.0.0.1:8000"
+private let baseURL = "https://hoops.koyeb.app"
+//private let baseURL = "http://127.0.0.1:8000"
 
 protocol EndpointsService { }
 

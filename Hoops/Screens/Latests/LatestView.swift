@@ -37,8 +37,17 @@ struct LatestView: View {
                     .font(.headline.weight(.thin))
                     .padding(.horizontal, 20)
                     .padding(.top, 12)
-                LatestGamesView(data: viewModel.latestGames)
-                    .padding(.vertical, 12)
+                ScrollView(.horizontal) {
+                    LazyHStack {
+                        ForEach(viewModel.latestGames) { game in
+                            GameResultView(data: game)
+                        }
+                    }
+                    .scrollTargetLayout()
+                }
+                .scrollTargetBehavior(.viewAligned)
+                .safeAreaPadding(.horizontal, 20)
+                .scrollIndicators(.hidden)
             }
 
             VStack(alignment: .leading) {

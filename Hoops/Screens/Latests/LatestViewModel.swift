@@ -11,10 +11,9 @@ import Foundation
 @MainActor
 class LatestViewModel: ObservableObject, LatestService {
     @Published var loading: Bool = true
-    @Published var latestGames: [ScoreModel] = []
+    @Published var latestGames: [GameResultModel] = []
     @Published var topPerformers: [TopPerformerModel] = []
     @Published var statLeaders: [StatLeaderModel] = []
-
 
     func fetchLatest() async {
         async let games = getLatestScores()
@@ -26,25 +25,29 @@ class LatestViewModel: ObservableObject, LatestService {
         handleLatestGames(response: response[0] as! LatestScoresResponse)
         handleTopPerformers(response: response[1] as! TopPerformersResponse)
         handleStatLeaders(response: response[2] as! StatLeadersResponse)
-        
+
         loading = false
     }
 
     private func handleLatestGames(response: LatestScoresResponse) {
         let scoreModels = response.latestScores.map { scoreResponse in
-            let firstTeam = TeamScoreModel(
-                teamName: scoreResponse[0].teamName,
-                score: scoreResponse[0].teamScore,
-                isWinner: scoreResponse[0].teamStatus == .winner
-            )
+            let homeTeamResponse = scoreResponse.homeTeam
+            let homeTeam = GameResultTeam(name: homeTeamResponse.teamName,
+                                          shortName: homeTeamResponse.teamShortName,
+                                          logo: homeTeamResponse.teamLogo,
+                                          score: homeTeamResponse.teamScore,
+                                          status: homeTeamResponse.teamStatus,
+                                          periodScores: homeTeamResponse.periodScores)
 
-            let secondTeam = TeamScoreModel(
-                teamName: scoreResponse[1].teamName,
-                score: scoreResponse[1].teamScore,
-                isWinner: scoreResponse[1].teamStatus == .winner
-            )
+            let awayTeamResponse = scoreResponse.awayTeam
+            let awayTeam = GameResultTeam(name: awayTeamResponse.teamName,
+                                          shortName: awayTeamResponse.teamShortName,
+                                          logo: awayTeamResponse.teamLogo,
+                                          score: awayTeamResponse.teamScore,
+                                          status: awayTeamResponse.teamStatus,
+                                          periodScores: awayTeamResponse.periodScores)
 
-            return ScoreModel(firstTeam: firstTeam, secondTeam: secondTeam)
+            return GameResultModel(homeTeam: homeTeam, awayTeam: awayTeam, color: scoreResponse.color)
         }
 
         latestGames = scoreModels

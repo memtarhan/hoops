@@ -167,20 +167,33 @@ struct ScoresResponseX: HTTPResponse {
 // MARK: - GameScoresResponse
 
 struct GameScoresResponse: HTTPResponse {
-    let teams: [ScoreResponse]
-    let scores: [[Int]]
-    let stats: [[String]]
+    let homeTeam: ScoreResponse
+    let awayTeam: ScoreResponse
+    let stats: [[String]]?
     let color: String
+
+    enum CodingKeys: String, CodingKey {
+        case homeTeam = "home_team"
+        case awayTeam = "away_team"
+        case stats
+        case color
+    }
 }
 
 // MARK: - ScoreResponse
 
 struct ScoreResponse: HTTPResponse {
+    let periodScores: [Int]
+    let teamLogo: String
+    let teamShortName: String
     let teamName: String
     let teamScore: Int
     let teamStatus: TeamStatus
 
     enum CodingKeys: String, CodingKey {
+        case periodScores = "period_scores"
+        case teamLogo = "team_logo"
+        case teamShortName = "team_short_name"
         case teamName = "team_name"
         case teamScore = "team_score"
         case teamStatus = "team_status"
@@ -195,7 +208,7 @@ enum TeamStatus: String, Codable {
 // MARK: - LatestScoresResponse
 
 struct LatestScoresResponse: HTTPResponse {
-    let latestScores: [[ScoreResponse]]
+    let latestScores: [GameScoresResponse]
 
     enum CodingKeys: String, CodingKey {
         case latestScores = "latest_scores"
