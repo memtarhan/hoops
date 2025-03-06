@@ -22,10 +22,9 @@ struct LatestView: View {
                     scrollView
                 }
             }
-            .navigationTitle("Latest")
-            .background(Color.secondarySystemBackground)
-            .task {
-                await viewModel.fetchLatest()
+            .navigationTitle(viewModel.title)
+            .onAppear {
+                viewModel.fetchLatest()
             }
         }
     }
@@ -58,7 +57,7 @@ struct LatestView: View {
                 TopPerformersView(data: viewModel.topPerformers)
                     .padding(.vertical, 12)
                     .padding(.horizontal, 4)
-                    .background(Color.systemBackground)
+                    .background(Color.secondarySystemBackground)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                     .padding(.horizontal, 20)
             }
@@ -71,7 +70,7 @@ struct LatestView: View {
                 StatLeadersView(data: viewModel.statLeaders)
                     .padding(.vertical, 12)
                     .padding(.horizontal, 4)
-                    .background(Color.systemBackground)
+                    .background(Color.secondarySystemBackground)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
                     .padding(.horizontal, 20)
             }

@@ -260,3 +260,18 @@ struct StatLeadersResponse: HTTPResponse {
         case statLeaders = "stat_leaders"
     }
 }
+
+// MARK: - LatestResponse
+
+struct LatestResponse: HTTPResponse {
+    let date: String
+    let games: [GameScoresResponse]
+    let topPerformers: [TopPerformerResponse]
+    let statLeaders: [StatLeaderResponse]
+
+    enum CodingKeys: String, CodingKey {
+        case date, games
+        case topPerformers = "top_performers"
+        case statLeaders = "stat_leaders"
+    }
+}

@@ -10,27 +10,33 @@ import Foundation
 
 @MainActor
 class LatestViewModel: ObservableObject, LatestService {
-    @Published var loading: Bool = true
+    @Published var loading: Bool = false
+    @Published var title: String = "Latest..."
     @Published var latestGames: [GameResultModel] = []
     @Published var topPerformers: [TopPerformerModel] = []
     @Published var statLeaders: [StatLeaderModel] = []
 
-    func fetchLatest() async {
-        async let games = getLatestScores()
-        async let performers = getTopPerformers()
-        async let leaders = getStatLeaders()
+    func fetchLatest() {
+        loading = true
 
-        let response = try! await [games, performers, leaders]
-
-        handleLatestGames(response: response[0] as! LatestScoresResponse)
-        handleTopPerformers(response: response[1] as! TopPerformersResponse)
-        handleStatLeaders(response: response[2] as! StatLeadersResponse)
-
-        loading = false
+        Task(priority: .background) {
+            if let response = try? await getLatest() {
+                title = "Latest at \(response.date)"
+                handleLatestGames(response: response.games)
+                handleTopPerformers(response: response.topPerformers)
+                handleStatLeaders(response: response.statLeaders)
+                
+                loading = false
+                
+            } else {
+                loading = false
+                // TODO: display error
+            }
+        }
     }
 
-    private func handleLatestGames(response: LatestScoresResponse) {
-        let scoreModels = response.latestScores.map { scoreResponse in
+    private func handleLatestGames(response: [GameScoresResponse]) {
+        latestGames = response.map { scoreResponse in
             let homeTeamResponse = scoreResponse.homeTeam
             let homeTeam = GameResultTeam(name: homeTeamResponse.teamName,
                                           shortName: homeTeamResponse.teamShortName,
@@ -49,12 +55,10 @@ class LatestViewModel: ObservableObject, LatestService {
 
             return GameResultModel(homeTeam: homeTeam, awayTeam: awayTeam, color: scoreResponse.color)
         }
-
-        latestGames = scoreModels
     }
 
-    private func handleTopPerformers(response: TopPerformersResponse) {
-        topPerformers = response.performers
+    private func handleTopPerformers(response: [TopPerformerResponse]) {
+        topPerformers = response
             .map { TopPerformerModel(
                 playerName: $0.playerName,
                 points: $0.rebounds,
@@ -64,8 +68,8 @@ class LatestViewModel: ObservableObject, LatestService {
             }
     }
 
-    private func handleStatLeaders(response: StatLeadersResponse) {
-        statLeaders = response.statLeaders
+    private func handleStatLeaders(response: [StatLeaderResponse]) {
+        statLeaders = response
             .map {
                 StatLeaderModel(
                     playerName: $0.playerName,

@@ -9,36 +9,16 @@
 import Foundation
 
 protocol LatestService: HTTPService, NBAEndpointsService {
-    func getLatestScores() async throws -> LatestScoresResponse
-    func getTopPerformers() async throws -> TopPerformersResponse
-    func getStatLeaders() async throws -> StatLeadersResponse
+    func getLatest() async throws -> LatestResponse
 }
 
 extension LatestService {
-    func getLatestScores() async throws -> LatestScoresResponse {
-        guard let endpoint = getLatestScoresURL() else {
+    func getLatest() async throws -> LatestResponse {
+        guard let endpoint = getLatestURL() else {
             throw HTTPError.badURL
         }
 
-        let response: LatestScoresResponse = try await handleDataTask(from: endpoint)
-        return response
-    }
-
-    func getTopPerformers() async throws -> TopPerformersResponse {
-        guard let endpoint = getLatestTopPerformersURL() else {
-            throw HTTPError.badURL
-        }
-
-        let response: TopPerformersResponse = try await handleDataTask(from: endpoint)
-        return response
-    }
-
-    func getStatLeaders() async throws -> StatLeadersResponse {
-        guard let endpoint = getStatLeadersURL() else {
-            throw HTTPError.badURL
-        }
-
-        let response: StatLeadersResponse = try await handleDataTask(from: endpoint)
+        let response: LatestResponse = try await handleDataTask(from: endpoint)
         return response
     }
 }

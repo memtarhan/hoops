@@ -16,6 +16,7 @@ protocol EndpointsService { }
 protocol NBAEndpointsService: EndpointsService {
     func getScoresURL(date: Date?) -> URL?
     func getStandingsURL() -> URL?
+    func getLatestURL() -> URL?
     func getLatestScoresURL() -> URL?
     func getLatestTopPerformersURL() -> URL?
     func getStatLeadersURL() -> URL?
@@ -43,6 +44,10 @@ extension NBAEndpointsService {
         URL(string: "\(baseURL)/nba/standings")
     }
 
+    func getLatestURL() -> URL? {
+        URL(string: "\(baseURL)/nba/latest")
+    }
+    
     func getLatestScoresURL() -> URL? {
         URL(string: "\(baseURL)/nba/latest-scores")
     }
